@@ -148,8 +148,28 @@ final class VisualActivityViewController: UIActivityViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        guard let superview = view.superview else {
+        guard var superview = view.superview else {
             return
+        }
+        
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            
+            var popoverView: UIView? = view
+            while popoverView != nil {
+                guard let view = popoverView else { continue }
+                //print(NSStringFromClass(type(of: view)))
+                if(NSStringFromClass(type(of: view)) == "_UIPopoverView"){
+                    //print("_UIPopoverView found")
+                    break
+                }
+                popoverView = view.superview
+            }
+            
+            guard let ssuperview = popoverView?.superview else {
+                return
+            }
+            //print(NSStringFromClass(type(of: ssuperview)))
+            superview = ssuperview
         }
         
         superview.addSubview(preview)
